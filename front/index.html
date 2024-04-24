@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circular Slideshow</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+  
+  .slideshow-container {
+    left: -40%;
+    top: -18%;
+    position: relative;
+    width: 700px;
+    height: 700px;
+  }
+  
+
+  .slide {
+    top: 25%;
+    left: 2%;
+    position: absolute;
+    width: 300px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    transition: transform 1.5s ease;
+  }
+
+  .slide:nth-child(2) {
+    transform: rotate(0deg) translateX(350px) rotate(0deg);
+    background-image: url('one.png');
+    background-position: cover;
+  }
+
+  .slide:nth-child(3) {
+    transform: rotate(120deg) translateX(350px) rotate(-120deg);
+    background-image: url('two.png');
+    background-size: cover;
+  }
+
+  .slide:nth-child(4) {
+    transform: rotate(240deg) translateX(350px) rotate(-240deg);
+    background-image: url('three.png');
+    background-size: cover;
+  }
+
+  .pentagon-wrapper {
+    width: 700px;
+    height: 700px;
+    background-color: #ff6f61;
+    color: rgb(30, 0, 255);
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .pentagon {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    transition: transform 1s ease, background-color 1s ease;
+    filter: url('#goo');
+    overflow:hidden;
+  }
+
+  .text-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 1;
+  }
+
+  .text {
+    font-size: 24px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<div class="slideshow-container">
+  <div class="pentagon">
+    <div class="pentagon-wrapper"></div>
+  </div>
+  <div class="slide"></div>
+  <div class="slide"></div>
+  <div class="slide"></div>
+  <div class="text-container">
+    <div class="text" id="text">Negative</div>
+  </div>
+  <svg style="visibility: hidden; position: absolute;" width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <defs>
+          <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="50" result="solid" />    
+              <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+              <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+          </filter>
+      </defs>
+  </svg>
+</div>
+
+<script>
+  let bgt = 0;
+  let degree = 0;
+  let colorIndex = 0;
+  const colors = ['#ff6f61', '#6f61ff', '#61ff6f']; // Colors to switch between
+  const texts = ['Negative', 'Positive', 'Neutral']; // Texts to switch between
+
+  setInterval(() => {
+    document.getElementById('text').textContent = texts[colorIndex];
+    document.querySelectorAll('.slide').forEach((slide, index) => {
+      slide.style.transform = `rotate(${degree + (index * 120)}deg) translateX(350px) rotate(${-degree - (index * 120)}deg)`;
+    });
+
+    const pentagon = document.querySelector('.pentagon');
+    const pentagonw = document.querySelector('.pentagon-wrapper');
+    pentagon.style.transform = `rotate(${bgt}deg)`;
+    pentagonw.style.backgroundColor = colors[colorIndex];
+    bgt+=72;
+    degree += 120;
+    colorIndex = (colorIndex + 1) % colors.length; // Cycle through colors
+  }, 2000); // Change slide every 2 seconds
+</script>
+
+</body>
+</html>
